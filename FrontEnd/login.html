@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="UTF-8">
+	<title>Sophie Bluel - Architecte d'intérieur</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap" rel="stylesheet">
+	<meta name="description" content="">
+	<link rel="stylesheet" href="./assets/style.css">
+</head>
+<body>
+<div class="max-width-and-container">
+    <header>
+        <h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
+        <nav>
+            <ul id="linkNavContainer">
+                <li><a href="index.html" class="linkNav">projets</a></li>
+                <li><a href="index.html#contact" class="linkNav">contact</a></li>
+                <li><a href="login.html" class="linkNav active-li">login</a></li>
+                <li><a href="#"><img src="./assets/icons/instagram.png" alt="Instagram"></a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="form-type padding-top">
+            <h2>Log In</h2>
+            <form id="login_form" action="#" method="post">
+                <label for="email">E-mail</label>
+                <input type="text" name="email" id="email">
+                <label for="password">Mot de passe</label>
+                <input type="password" name="password" id="password">
+                <input type="submit" value="Se connecter" id="login_submit">
+                <a href="#">Mot de passe oublié</a>
+            </form>
+        </section>
+    </main>
+</div>
+
+<script>
+
+        let loginForm = document.getElementById("login_form");
+
+            loginForm.addEventListener("submit", function(event) {
+                event.preventDefault();
+
+                let email = document.getElementById("email").value;
+                let password = document.getElementById("password").value;
+
+                if(email.trim() !== "" && password.trim() !== "") {
+                    loginRequest(email, password);
+                }
+
+            })
+
+
+    function loginRequest(email, password) {
+        const apiUrlUsers = "http://localhost:5678/api/users/login";
+        
+        fetch(apiUrlUsers, {
+            method: "POST",
+            headers: {
+                "accept": "application/json",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ 
+                "email" : email, 
+                "password" : password 
+            })
+        })
+        .then(response => {
+			if (!response.ok) {
+				throw new Error('Erreur lors de la récupération des données -> users/login')
+			}
+			return response.json();
+		})
+        .then(data => {
+            if (data && data.token) {
+                sessionStorage.setItem('token', data.token); 
+                window.location.href = 'index.html';
+            } else {
+                alert('Identifiant ou mot-de-passe incorrect. Veuillez réessayer.');
+            }
+        })
+        .catch(error => {
+			console.error('Erreur:', error);
+		  });
+        }
+    
+
+</script>
+</body>
+</html>
