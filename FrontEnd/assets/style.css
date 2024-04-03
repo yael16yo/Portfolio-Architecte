@@ -417,7 +417,7 @@ text-align: center;
 }
 
 .formInputAdd input[type=file] {
-	display: none;
+	
 }
 
 .formInputAdd input[type=text], .formInputAdd select {

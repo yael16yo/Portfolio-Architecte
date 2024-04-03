@@ -47,13 +47,13 @@
 								<img src="#" alt="Image preview" id="image">
 							</div>
 						</label>
-						<input type="file" id="inputImage" accept="image/png, image/jpeg" size="4194304" onchange="previewPicture(this)" required >
+						<input type="file" id="inputImage" name="inputImageName" accept="image/png, image/jpeg" size="4194304" onchange="previewPicture(this)" required >
 						
 						<label for="inputTitle">Titre</label>
-						<input type="text" id="inputTitle" required name="inputTitle">
+						<input type="text" id="inputTitle" required name="inputTitleName">
 						
 						<label for="inputCategory">Catégorie</label>
-						<select name="categories" id="inputCategory" required name="inputCategory">
+						<select name="categories" id="inputCategory" required name="inputCategoryName">
 							<option value=""></option>
 							<option value="1">Objets</option>
 							<option value="2">Appartements</option>
@@ -134,9 +134,11 @@
 	let dynamicDivAddPhotos = document.getElementById("dynamicDivAddPhotos");
 	let addPhotosButton = document.getElementById("addPhotosButton");
 	let backButton = document.getElementById("backButton");
+
 	let inputTitle = document.getElementById("inputTitle");
 	let inputImage = document.getElementById("inputImage");
 	let inputCategory = document.getElementById("inputCategory");
+
 	let image = document.getElementById("image");
 	let dynamicSpanChange = document.getElementById("dynamicSpanChange");
 	let formAdd = document.getElementById("formAddId");
@@ -150,31 +152,48 @@
 			dynamicImagePreview.style.display = "flex";
         }
     } 
-	
+
+
+
 	formAdd.addEventListener('submit', function(e) {
 		e.preventDefault();
+
+		
+
 		let inputTitleValue = inputTitle.value;
 		let inputImageValue = inputImage.value;
 		let inputCategoryValue = inputCategory.value;
+		let re = /(?:\.([^.]+))?$/;
+		let extensionImage = re.exec(inputImageValue)[1];
+		
+		const file = event.target.files[0];
 
-		let formData = new FormData;
-		formData.append("imageUrl", "assets/images/" + inputImageValue);
-		formData.append("title", inputTitleValue);
-		formData.append("categoryId", inputCategoryValue);
+		if (file) {
+			const reader = new FileReader();
+
+			reader.onload = function(event) {	
+				inputImage.setAttribute('src', event.target.result); 
+			}
+				reader.readAsDataURL(file);
+		};
+		
+		const formData = new FormData();
+		formData.append("image", inputImage.files[0]);
+		formData.append("title", inputTitle.value);
+		formData.append("category", inputCategory.value);
 
 		fetch(apiUrlWorks, {
-			method: "POST",
-			headers: {
-				'Content-Type' : 'multipart/form-data',
-				'accept' : 'application/json',
-				'Authorization' : 'Bearer ' + tokenUserDelete,
-			},
-			body: formData
-		}).catch(error => {
-			console.log("Erreur:", error);
-		});
-		//showGallery();
-	});
+						method: "POST",
+						headers: {
+							'Content-Type' : 'multipart/form-data',
+							'accept' : 'application/json',
+							Authorization : 'Bearer ' + tokenUserDelete,
+						},
+						body: formData
+					}).catch(error => {
+						console.log("Erreur:", error);
+					});
+				});
 	
 
 	addPhotosButton.onclick = function() {
