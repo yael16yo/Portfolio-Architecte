@@ -135,10 +135,6 @@
 	let addPhotosButton = document.getElementById("addPhotosButton");
 	let backButton = document.getElementById("backButton");
 
-	let inputTitle = document.getElementById("inputTitle");
-	let inputImage = document.getElementById("inputImage");
-	let inputCategory = document.getElementById("inputCategory");
-
 	let image = document.getElementById("image");
 	let dynamicSpanChange = document.getElementById("dynamicSpanChange");
 	let formAdd = document.getElementById("formAddId");
@@ -158,42 +154,42 @@
 	formAdd.addEventListener('submit', function(e) {
 		e.preventDefault();
 
-		
+			let inputTitle = document.getElementById("inputTitle");
+			let inputImage = document.getElementById("inputImage");
+			let inputCategory = document.getElementById("inputCategory");
+			let inputTitleValue = inputTitle.value;
+			let inputImageValue = inputImage.value;
+			let inputCategoryValue = inputCategory.value;
+			
+			/*let re = /(?:\.([^.]+))?$/;
+			let extensionImage = re.exec(inputImageValue)[1];*/
 
-		let inputTitleValue = inputTitle.value;
-		let inputImageValue = inputImage.value;
-		let inputCategoryValue = inputCategory.value;
-		let re = /(?:\.([^.]+))?$/;
-		let extensionImage = re.exec(inputImageValue)[1];
-		
-		const file = event.target.files[0];
+				let file = inputImage.files[0];
 
-		if (file) {
-			const reader = new FileReader();
+				const formData = new FormData();
 
-			reader.onload = function(event) {	
-				inputImage.setAttribute('src', event.target.result); 
-			}
-				reader.readAsDataURL(file);
-		};
-		
-		const formData = new FormData();
-		formData.append("image", inputImage.files[0]);
-		formData.append("title", inputTitle.value);
-		formData.append("category", inputCategory.value);
+				formData.append("title", inputTitleValue);
+				formData.append("category", inputCategoryValue);
+				formData.append("image", file);
 
-		fetch(apiUrlWorks, {
-						method: "POST",
-						headers: {
-							'Content-Type' : 'multipart/form-data',
-							'accept' : 'application/json',
-							Authorization : 'Bearer ' + tokenUserDelete,
-						},
-						body: formData
-					}).catch(error => {
-						console.log("Erreur:", error);
-					});
-				});
+			
+
+				fetch(apiUrlWorks, {
+								method: "POST",
+								headers: {
+									Authorization : "Bearer " + tokenUserDelete,
+									"Content-Type" : "multipart/form-data"
+								},
+								body: formData
+							})
+							.then(response => response.json())
+							.then(data => {
+								console.log(data);
+							}).catch(error => {
+								console.log("Erreur:", error);
+							});
+						});
+						
 	
 
 	addPhotosButton.onclick = function() {
@@ -261,9 +257,9 @@
 			fetch(apiUrlWorksDelete, {
 				method: 'DELETE',
 				headers : {
-					'Accept' : 'application/json',
-					'cache' : 'no-cache',
-					'Authorization' : 'Bearer '+tokenUserDelete
+					"Accept" : "application/json",
+					"cache" : "no-cache",
+					"Authorization" : "Bearer "+tokenUserDelete
 				}
 			}).catch(error => {
 				console.error('Erreur:', error);
