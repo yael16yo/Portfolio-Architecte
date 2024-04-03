@@ -417,7 +417,7 @@ text-align: center;
 }
 
 .formInputAdd input[type=file] {
-	
+	display: none !important;
 }
 
 .formInputAdd input[type=text], .formInputAdd select {
@@ -430,14 +430,13 @@ text-align: center;
     padding-inline: 0 !important;
 }
 
-
 #dynamicDivDeletePhotos {
 	padding-bottom: 50px;
 	border-bottom: 1px solid #B3B3B3;
 }
 
 .photosGalleryDelete {
-	max-height: 350px;
+	height: 80%;
 	/*height: 100%;*/
 	overflow-y: auto;
 	overflow-x: hidden;
@@ -448,7 +447,7 @@ text-align: center;
 }
 
 .photosGalleryAdd {
-	max-height: 350px;
+	height: 80%;
 	/*height: 100%;*/
 
 	overflow-y: auto;
