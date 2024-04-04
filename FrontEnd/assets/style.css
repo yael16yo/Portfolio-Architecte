@@ -416,6 +416,7 @@ text-align: center;
 	display: block;
 }
 
+
 .formInputAdd input[type=file] {
 	display: none !important;
 }
