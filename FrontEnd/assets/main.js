@@ -52,8 +52,7 @@
 				fetch(apiUrlWorks, {
 								method: "POST",
 								headers: {
-									Authorization : "Bearer " + tokenUserDelete,
-									"Content-Type" : "multipart/form-data"
+									Authorization : "Bearer " + tokenUserDelete
 								},
 								body: formData
 							})
