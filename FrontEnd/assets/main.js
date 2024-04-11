@@ -60,6 +60,13 @@
 							}).catch(error => {
 								console.log("Erreur:", error);
 				});
+
+				let modalModify = document.getElementById("modalModify");
+				modalModify.style.display = "none";
+				let htmlOverflow = document.getElementsByTagName("html")[0];
+				htmlOverflow.style.overflow = "auto";
+				showGallery();
+
 			});
 
 						
