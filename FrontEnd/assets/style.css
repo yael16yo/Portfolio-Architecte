@@ -34,10 +34,6 @@ body {
 	margin: 0;
 }
 
-.max-width-and-container {
-	max-width: var(--max-width);
-	margin:auto;
-}
 header {
 	display: flex;
 	justify-content: space-between;
@@ -128,30 +124,39 @@ li:hover {
 	text-align: center;
 	margin-bottom: 1em;
 }
-.gallery {
+
+.container-gallery {
 	display: flex;
 	justify-content: center;
-	flex-wrap: row wrap;
+}
+
+.gallery {
+	display: grid;
+	grid-template-columns: repeat(3, auto);
+	gap: 20px;
 }
 
 .gallery figure {
-	margin: 5px 10px;
+	margin: 0px;
+	height: 400px;
+	margin-bottom: 10px;
 }
 
 .gallery figcaption {
-	display: flex;
+	display: block;
 }
 
 .gallery img {
-	height: 400px;
-	width: 300px;
+	height: 100%;
+	width: 100%;
 	object-fit: cover;
 }
 .padding-top {
-	padding-top: 100px;
+	padding-top: 30px;
 }
 .form-type {
-	width: 50%;
+	width: 100%;
+	max-width: 400px;
 margin: auto;
 }
 
@@ -187,12 +192,15 @@ margin: auto;
 .form-type textarea {
 	border: none;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+	resize: vertical;
+	min-height: 150px;
 }
 
 
 
 .container-filters {
 	display: flex;
+	flex-wrap: nowrap;
 	justify-content: center;
 	margin: 50px auto;
 }
@@ -268,7 +276,6 @@ text-align: center;
 	width: 100%; 
 	height: 100vh;
 	overflow: auto;
-	padding: 30px;
 	background-color: rgb(0,0,0); 
 	background-color: rgba(0,0,0,0.3); 
   }
@@ -276,11 +283,12 @@ text-align: center;
   .modal-content {
 	background-color: #fefefe;
 	border-radius: 10px;
-	margin: auto;
 	padding: 30px;
+	margin: auto;
+	margin-top: 20px;
 	height: 80vh;
 	max-width: 630px; 
-	width: 100%;
+	width: 90%;
   }
 
   .return {
@@ -313,8 +321,10 @@ text-align: center;
   }
 
 .containerDynamicDiv {
-	width: calc(100% - 10rem);
+	width: 80%;
 	margin: auto;
+	height: 90%;
+	overflow-y: scroll;
 }
 
 .validateButton {
@@ -344,7 +354,13 @@ text-align: center;
 #dynamicDivAddPhotos {
 	display: none;
 	padding-bottom: 50px;
-	border-bottom: 1px solid #B3B3B3;
+}
+
+.hr {
+	background-color: #B3B3B3;
+	border: none;
+	height: 1px;
+	margin-top: 50px;
 }
 
 .labelInputImage {
@@ -392,7 +408,6 @@ text-align: center;
 	justify-content: center;
 	align-items: center;
 	height: 170px;
-	
 }
 
 #image {
@@ -433,20 +448,19 @@ text-align: center;
 }
 
 .photosGalleryDelete {
-	height: 80%;
+	height: 90%;
 	/*height: 100%;*/
 	overflow-y: auto;
 	overflow-x: hidden;
 	display: flex;
-	justify-content: space-between;
-	gap: 30px 10px;
+	justify-content: flex-start;
+	gap: 20px 10px;
 	flex-wrap: wrap;
 }
 
 .photosGalleryAdd {
-	height: 80%;
+	height: 90%;
 	/*height: 100%;*/
-
 	overflow-y: auto;
 	overflow-x: hidden;
 }
@@ -489,6 +503,8 @@ text-align: center;
 
 .imageFromGallery img {
 	height: 110px;
+    width: 82px;
+    object-fit: cover;
 	display: flex;
 	margin: auto;
 }
@@ -505,6 +521,14 @@ text-align: center;
 	padding: 5px;
 	border-radius: 2px;
 	cursor: pointer;
+}
+
+.max-width-and-container {
+	max-width: var(--max-width);
+	display: block;
+	margin: auto;
+	padding: 50px;
+	padding-top: 0px;
 }
 
 input, select {
@@ -529,12 +553,12 @@ input[type="submit"]:hover {
 }
 
 footer {
+	max-width: var(--max-width);
 	width: 100%;
 	background-color: var(--white-color);
 }
 
 footer nav {
-	width: var(--max-width);
 	margin: auto;
 	height: 60px;
 	display: flex;
@@ -551,4 +575,58 @@ footer nav ul li a{
 	font-weight: 300;
 	font-size: 14px;
 	font-family: 'Work Sans';
+}
+
+@media screen AND (max-width: 767px) {	
+	#modifierBtnId {
+		display: block;
+	}
+	header {
+		display: block;
+	}
+	header h1 {
+		display: flex;
+		text-align: center;
+		margin: auto;
+	}
+
+	header nav {
+		display: flex;
+		justify-content: center;
+		margin: auto;
+	}
+
+	header nav ul {
+		padding: 0;
+	}
+
+	#introduction {
+		display: block;
+	}
+
+	#introduction img {
+		margin-bottom: 60px;
+	}
+	.container-filters {
+		display: block;
+	}
+	.filter-case label {
+		height: 40px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0 20px;
+		cursor: default;
+		margin: 10px auto;
+	}
+	.gallery img {
+		height: 400px;
+    	width: 300px;
+		max-width: 300px;
+		width: 100%;
+		object-fit: cover;
+	}
+	.gallery {
+		grid-template-columns: repeat(1, 100%);
+	}
 }

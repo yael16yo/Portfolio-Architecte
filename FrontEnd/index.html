@@ -59,11 +59,11 @@
 							<option value="2">Appartements</option>
 							<option value="3">Hotels & restaurants</option>
 						</select>
+						<hr class="hr">
 						<button type="submit" class="validateButton" id="validateButton">Valider</button>
 					</form>
 				</div>
 			</div>
-			
 		</div>
 	</div>
 </div>
@@ -97,7 +97,9 @@
 
 			<div class="container-filters" id="filters"></div>
 
-			<div class="gallery" id="items"></div>
+			<div class="container-gallery">
+				<div class="gallery" id="items"></div>
+			</div>
 
 	</section>
 
@@ -127,77 +129,5 @@
 
 
 <script src="assets/main.js"></script>
-<script>
-	let	tokenUser = sessionStorage.getItem('token');
-
-	/*window.addEventListener('beforeunload', function() {
-    	sessionStorage.removeItem('token');
-	});*/
-
-	let logout = document.getElementById("logout");
-	logout.addEventListener('click', function() {
-		sessionStorage.removeItem('token');
-		window.location.reload();
-	})
-
-	if(tokenUser !== null) {
-		let loginBtn = document.getElementById('loginbtn');
-		let logoutBtn = document.getElementById('logoutbtn');
-		loginBtn.style.display = "none";
-		logoutBtn.style.display = "flex";
-	} 
-
-	
-	let outputUserHeader = "";
-	if(tokenUser !== null) {
-		outputUserHeader += `
-			<div class="header-modification">
-				<p><i class="fa fa-pen-to-square"></i> Mode édition</p>
-			</div>
-		`
-	} else {
-		outputUserHeader = "";
-	}
-	document.getElementById("outputUserHeader_id").innerHTML = outputUserHeader;
-
-	if(tokenUser !== null) {
-		let outputModifyBtn = "";
-		if(tokenUser !== null) {
-			outputModifyBtn +=`
-				<span class="openModalButton" id="btnOpen"><i class="fa fa-pen-to-square"></i> modifier</span>
-			`
-		} else {
-			outputModifyBtn = "";
-		}
-		document.getElementById("modifierBtnId").innerHTML = outputModifyBtn;
-
-		
-		let btnOpen = document.getElementById("btnOpen");
-		let modalModify = document.getElementById("modalModify");
-		let htmlOverflow = document.getElementsByTagName("html")[0];
-		let close = document.getElementsByClassName("close")[0];
-
-		btnOpen.onclick = function() {
-			modalModify.style.display = "block";
-			htmlOverflow.style.overflow = "hidden";
-		}
-
-		close.onclick = function() {
-			modalModify.style.display = "none";
-			htmlOverflow.style.overflow = "auto";
-		}
-
-		window.addEventListener("click", function(event) {
-			if (event.target == modalModify) {
-				modalModify.style.display = "none";
-				htmlOverflow.style.overflow = "auto";
-			}
-		});
-	}
-
-	
-	validateFields();
-	showGallery();
-</script>
 </body>
 </html>

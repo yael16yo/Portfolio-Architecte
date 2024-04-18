@@ -1,6 +1,7 @@
 	const apiUrlFilters = "http://localhost:5678/api/categories";
 	const apiUrlWorks = "http://localhost:5678/api/works";
 
+	
 	let	tokenUserDelete = sessionStorage.getItem('token');
 	let validateButton = document.getElementById("validateButton");
 	let dynamicDivDeletePhotos = document.getElementById("dynamicDivDeletePhotos");
@@ -20,6 +21,78 @@
 	let inputCategoryValue = inputCategory.value;
 
 
+	let	tokenUser = sessionStorage.getItem('token');
+
+	/*window.addEventListener('beforeunload', function() {
+    	sessionStorage.removeItem('token');
+	});*/
+
+	let logout = document.getElementById("logout");
+	logout.addEventListener('click', function() {
+		sessionStorage.removeItem('token');
+		window.location.reload();
+	})
+
+	if(tokenUser !== null) {
+		let loginBtn = document.getElementById('loginbtn');
+		let logoutBtn = document.getElementById('logoutbtn');
+		loginBtn.style.display = "none";
+		logoutBtn.style.display = "flex";
+	} 
+
+	
+	let outputUserHeader = "";
+	if(tokenUser !== null) {
+		outputUserHeader += `
+			<div class="header-modification">
+				<p><i class="fa fa-pen-to-square"></i> Mode édition</p>
+			</div>
+		`
+	} else {
+		outputUserHeader = "";
+	}
+	document.getElementById("outputUserHeader_id").innerHTML = outputUserHeader;
+
+	if(tokenUser !== null) {
+		let outputModifyBtn = "";
+		if(tokenUser !== null) {
+			outputModifyBtn +=`
+				<span class="openModalButton" id="btnOpen"><i class="fa fa-pen-to-square"></i> modifier</span>
+			`
+		} else {
+			outputModifyBtn = "";
+		}
+		document.getElementById("modifierBtnId").innerHTML = outputModifyBtn;
+
+		
+		let btnOpen = document.getElementById("btnOpen");
+		let modalModify = document.getElementById("modalModify");
+		let htmlOverflow = document.getElementsByTagName("html")[0];
+		let close = document.getElementsByClassName("close")[0];
+
+		btnOpen.onclick = function() {
+			modalModify.style.display = "block";
+			htmlOverflow.style.overflow = "hidden";
+		}
+
+		close.onclick = function() {
+			modalModify.style.display = "none";
+			htmlOverflow.style.overflow = "auto";
+		}
+
+		window.addEventListener("click", function(event) {
+			if (event.target == modalModify) {
+				modalModify.style.display = "none";
+				htmlOverflow.style.overflow = "auto";
+			}
+		});
+	}
+
+	
+	validateFields();
+	showGallery();
+
+
 
 	inputTitle.addEventListener("input", validateFields);
 	inputImage.addEventListener("input", validateFields);
@@ -34,41 +107,6 @@
 			validateButton.style.pointerEvents = ""; 
 		}
 	}
-
-
-	formAdd.addEventListener('submit', function(e) {
-		e.preventDefault();
-		
-				let file = document.getElementById('inputImage').files[0];
-                let inputTitleValue = document.getElementById('inputTitle').value;
-                let inputCategoryValue = document.getElementById('inputCategory').value;
-				const formData = new FormData();
-
-				formData.append("title", inputTitleValue);
-				formData.append("category", inputCategoryValue);
-				formData.append("image", file);
-
-				fetch(apiUrlWorks, {
-								method: "POST",
-								headers: {
-									Authorization : "Bearer " + tokenUserDelete
-								},
-								body: formData
-							})
-							.then(data => {
-								console.log(data);
-							}).catch(error => {
-								console.log("Erreur:", error);
-				});
-
-				let modalModify = document.getElementById("modalModify");
-				modalModify.style.display = "none";
-				let htmlOverflow = document.getElementsByTagName("html")[0];
-				htmlOverflow.style.overflow = "auto";
-				showGallery();
-
-			});
-
 						
         let previewPicture  = function (e) {
         const [picture] = e.files
@@ -133,10 +171,28 @@
 					"cache" : "no-cache",
 					"Authorization" : "Bearer "+tokenUserDelete
 				}
+			}).then(data => {
+				fetch(apiUrlWorks)
+					.then(response => {
+						if (!response.ok) {
+						throw new Error('Erreur lors de la récupération des données -> works');
+						}
+						return response.json();
+					})
+					.then(data => {
+							window.allProjectsUpdate = data;
+							displayShows(allProjectsUpdate);
+							showGallery();
+							//displayShows(data);
+						})
+					.catch(error => {
+						console.error('Erreur:', error);
+					});
 			}).catch(error => {
 				console.error('Erreur:', error);
 			});
 			showGallery();
+			//displayShows();
 		}
 		
 
@@ -197,10 +253,13 @@
 		if(categoryId > 0) {
 			filterShows = filterShows.filter(show => show.categoryId === categoryId);
 		}
-		displayShows(filterShows);
+		//console.log("Données filtrées :", filterShows);
+    	displayShows(filterShows);
 	}
 
+
 	function displayShows(shows) {
+		if (shows && shows.length > 0) { 
 		let outputWorks = "";
 		shows.forEach(({id, title, categoryId, imageUrl}) => {
 			outputWorks += `
@@ -210,5 +269,67 @@
 				</figure>
 			`
 		})
-		document.getElementById("items").innerHTML = outputWorks;
+		document.getElementById("items").innerHTML = outputWorks; 
+			} else {
+				console.error("Aucune donnée à afficher");
+		}	
 	}
+
+	formAdd.addEventListener('submit', function(e) {
+		e.preventDefault();
+		
+				let file = document.getElementById('inputImage').files[0];
+                let inputTitleValue = document.getElementById('inputTitle').value;
+                let inputCategoryValue = document.getElementById('inputCategory').value;
+				const formData = new FormData();
+
+				formData.append("title", inputTitleValue);
+				formData.append("category", inputCategoryValue);
+				formData.append("image", file);
+
+				fetch(apiUrlWorks, {
+								method: "POST",
+								headers: {
+									Authorization : "Bearer " + tokenUserDelete
+								},
+								body: formData
+							})
+							.then(response => response.json())
+							.then(data => {
+								fetch(apiUrlWorks)
+								.then(response => {
+									if (!response.ok) {
+									throw new Error('Erreur lors de la récupération des données -> works');
+									}
+									return response.json();
+								})
+								.then(data => {
+										window.allProjectsUpdate = data;
+										displayShows(allProjectsUpdate);
+										showGallery();
+										//displayShows(data);
+									})
+								.catch(error => {
+									console.error('Erreur:', error);
+								});
+							})
+							.catch(error => {
+								console.log("Erreur:", error);
+				});
+
+				inputTitle.value = '';
+				inputCategory.value = '';
+				inputImage.value = '';
+				dynamicSpanChange.style.display = "block";
+            	dynamicImagePreview.style.display = "none";
+
+				dynamicDivDeletePhotos.style.display = "block";
+				dynamicDivAddPhotos.style.display = "none";
+				addPhotosButton.style.display = "block";
+				validateButton.style.display = "none";
+				backButton.style.display = "none";
+				let modalModify = document.getElementById("modalModify");
+				modalModify.style.display = "none";
+				let htmlOverflow = document.getElementsByTagName("html")[0];
+				htmlOverflow.style.overflow = "auto";
+			});
