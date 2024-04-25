@@ -24,6 +24,7 @@ table {
 /** end reset css**/
 html {
 	font-family: 'Work Sans' ;
+	scroll-behavior: smooth;
 }
 
 body {
@@ -324,7 +325,6 @@ text-align: center;
 	width: 80%;
 	margin: auto;
 	height: 90%;
-	overflow-y: scroll;
 }
 
 .validateButton {
@@ -353,6 +353,7 @@ text-align: center;
 
 #dynamicDivAddPhotos {
 	display: none;
+	height: 60%;
 	padding-bottom: 50px;
 }
 
@@ -360,7 +361,7 @@ text-align: center;
 	background-color: #B3B3B3;
 	border: none;
 	height: 1px;
-	margin-top: 50px;
+	/*margin-top: 50px;*/
 }
 
 .labelInputImage {
