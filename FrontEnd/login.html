@@ -9,7 +9,6 @@
 	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap" rel="stylesheet">
 	<meta name="description" content="">
 	<link rel="stylesheet" href="./assets/style.css">
-    <link rel="stylesheet" href="./assets/main.scss">
 </head>
 <body>
 <div class="max-width-and-container">
@@ -42,13 +41,13 @@
 
 <script>
 
-        let loginForm = document.getElementById("login_form");
+        const loginForm = document.getElementById("login_form");
 
             loginForm.addEventListener("submit", function(event) {
                 event.preventDefault();
 
-                let email = document.getElementById("email").value;
-                let password = document.getElementById("password").value;
+                const email = document.getElementById("email").value;
+                const password = document.getElementById("password").value;
 
                 if(email.trim() !== "" && password.trim() !== "") {
                     loginRequest(email, password);
