@@ -150,28 +150,33 @@ backButton.addEventListener("click", function() {
 
 // fonction permettant l'affichage des différentes bulles de sélection (chacune correspondant à un filtrage différent en fonction de la catégorie sélectionné)
 
-async function showItemsFilters() {
-    const datasFilters = await fetch(apiUrlFilters);
-    const dataFilterPieces = await datasFilters.json();
-    const showFilters = document.getElementById("filters");
+function showItemsFilters() {
+    fetch(apiUrlFilters)
+    .then(datasFilters => datasFilters.json())
+    .then(dataFilterPieces => {
+        const showFilters = document.getElementById("filters");
 
-    const allButton = document.createElement("div");
+        const allButton = document.createElement("div");
         allButton.classList.add("filter-case");
-        allButton. innerHTML = `
-        <input type="radio" id="all" name="filters-name" checked onclick="dependOnFilter(0)">
-        <label for="all">Tous</label>
-    `;
-    showFilters.appendChild(allButton);
-
-    for (let i = 0; i < dataFilterPieces.length; i++) {
-        const bulle_filter = document.createElement("div");
-        bulle_filter.classList.add("filter-case");
-        bulle_filter. innerHTML = `
-        <input type="radio" id="${dataFilterPieces[i].name}" name="filters-name" onclick="dependOnFilter(${dataFilterPieces[i].id})">
-        <label for="${dataFilterPieces[i].name}">${dataFilterPieces[i].name}</label>
+        allButton.innerHTML = `
+            <input type="radio" id="all" name="filters-name" checked onclick="filterShows(0)">
+            <label for="all">Tous</label>
         `;
-        showFilters.appendChild (bulle_filter);
-    }
+        showFilters.appendChild(allButton);
+
+        for (let i = 0; i < dataFilterPieces.length; i++) {
+            const bulle_filter = document.createElement("div");
+            bulle_filter.classList.add("filter-case");
+            bulle_filter.innerHTML = `
+            <input type="radio" id="${dataFilterPieces[i].name}" name="filters-name" onclick="filterShows(${dataFilterPieces[i].id})">
+            <label for="${dataFilterPieces[i].name}">${dataFilterPieces[i].name}</label>
+            `;
+            showFilters.appendChild(bulle_filter);
+        }
+    })
+    .catch(error => {
+        console.log('Erreur', error);
+    });
 }
 
 //fonction permettant le filtrage des images en fonction de leur id de catégorie
@@ -259,13 +264,8 @@ async function deletePhotosFromGallery(id) {
             "Authorization" : "Bearer " + tokenUser
         }
     })
-    .then(updateAllDatas => {
         showGallery();
         showGalleryForDelete();
-    })
-    .catch(error => {
-        console.log("Erreur", error);
-    })
 }
 
 
