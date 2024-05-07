@@ -2,44 +2,23 @@
 
 const apiUrlFilters = "http://localhost:5678/api/categories";
 const apiUrlWorks = "http://localhost:5678/api/works";
-
 const tokenUser = sessionStorage.getItem('token');
-const validateButton = document.getElementById("validateButton");
-const dynamicDivDeletePhotos = document.getElementById("dynamicDivDeletePhotos");
-const dynamicDivAddPhotos = document.getElementById("dynamicDivAddPhotos");
-const deletePhotosContainer = document.getElementById("divForGalleryDelete");
-const addPhotosButton = document.getElementById("addPhotosButton");
-const backButton = document.getElementById("backButton");
-
-const showFilters = document.getElementById("filters"); 
-
-const logout = document.getElementById("logout");
-const loginBtn = document.getElementById('loginbtn');
-const logoutBtn = document.getElementById('logoutbtn');
-
-const image = document.getElementById("image");
-const itemsImage = document.getElementById("items");
-const dynamicSpanChange = document.getElementById("dynamicSpanChange");
-const formAdd = document.getElementById("formAddId");
- 
-const inputTitle = document.getElementById("inputTitle");
-const inputImage = document.getElementById("inputImage");
-const inputCategory = document.getElementById("inputCategory");
-const inputTitleValue = inputTitle.value;
-const inputImageValue = inputImage.value;
-const inputCategoryValue = inputCategory.value;
 
 
 //Déconnexion
-
+(function() {
+const logout = document.getElementById("logout");
 logout.addEventListener('click', function() {
     sessionStorage.removeItem('token');
     window.location.reload();
 });
+})();
 
 //Login et logout buttons
 
 if(tokenUser !== null) {
+    const loginBtn = document.getElementById('loginbtn');
+    const logoutBtn = document.getElementById('logoutbtn');
     loginBtn.style.display = "none";
     logoutBtn.style.display = "flex";
 } 
@@ -100,14 +79,18 @@ if(tokenUser !== null) {
     });
 }
 
-
 //Stylisation des inputs
 
+(function() {
+const inputTitle = document.getElementById("inputTitle");
+const inputImage = document.getElementById("inputImage");
+const inputCategory = document.getElementById("inputCategory");
 inputTitle.addEventListener("input", validateFields);
 inputImage.addEventListener("input", validateFields);
 inputCategory.addEventListener("input", validateFields);
 
 function validateFields() {
+    const validateButton = document.getElementById("validateButton");
     if (inputTitle.value != "" && inputImage.value != "" && inputCategory.value != "") {
         validateButton.style.backgroundColor = "var(--main-color)";
         validateButton.style.pointerEvents = "fill";
@@ -116,10 +99,14 @@ function validateFields() {
         validateButton.style.pointerEvents = ""; 
     }
 }
-                    
+})();    
+
     let previewPicture  = function (e) {
     const [picture] = e.files
     if (picture) {
+        const image = document.getElementById("image");
+        const dynamicSpanChange = document.getElementById("dynamicSpanChange");
+        const dynamicImagePreview = document.getElementById("dynamicImagePreview");
         image.src = URL.createObjectURL(picture);
         dynamicSpanChange.style.display = "none";
         dynamicImagePreview.style.display = "flex";
@@ -128,7 +115,12 @@ function validateFields() {
     
 
 //affichage des différentes buttons et sections dynamiques dans le modal 
+const dynamicDivDeletePhotos = document.getElementById("dynamicDivDeletePhotos");
+const dynamicDivAddPhotos = document.getElementById("dynamicDivAddPhotos");
+const deletePhotosContainer = document.getElementById("divForGalleryDelete");
+const validateButton = document.getElementById("validateButton");
 
+const addPhotosButton = document.getElementById("addPhotosButton");
 addPhotosButton.addEventListener("click", function() {
     dynamicDivDeletePhotos.style.display = "none";
     dynamicDivAddPhotos.style.display = "block";
@@ -137,6 +129,7 @@ addPhotosButton.addEventListener("click", function() {
     backButton.style.display = "block";
 });
 
+const backButton = document.getElementById("backButton");
 backButton.addEventListener("click", function() {
     dynamicDivDeletePhotos.style.display = "block";
     dynamicDivAddPhotos.style.display = "none";
@@ -159,19 +152,29 @@ function showItemsFilters() {
         const allButton = document.createElement("div");
         allButton.classList.add("filter-case");
         allButton.innerHTML = `
-            <input type="radio" id="all" name="filters-name" checked onclick="filterShows(0)">
+            <input type="radio" id="all" name="filters-name" checked>
             <label for="all">Tous</label>
         `;
         showFilters.appendChild(allButton);
+        
+        const listenerAll = document.getElementById("all");
+        listenerAll.addEventListener("click", function() {
+            dependOnFilter(0);
+        });
 
         for (let i = 0; i < dataFilterPieces.length; i++) {
             const bulle_filter = document.createElement("div");
             bulle_filter.classList.add("filter-case");
             bulle_filter.innerHTML = `
-            <input type="radio" id="${dataFilterPieces[i].name}" name="filters-name" onclick="filterShows(${dataFilterPieces[i].id})">
+            <input type="radio" id="${dataFilterPieces[i].name}" name="filters-name">
             <label for="${dataFilterPieces[i].name}">${dataFilterPieces[i].name}</label>
             `;
             showFilters.appendChild(bulle_filter);
+
+            const listenerOthers = document.getElementById(dataFilterPieces[i].name);
+            listenerOthers.addEventListener("click", function() {
+                dependOnFilter(dataFilterPieces[i].id);
+            });
         }
     })
     .catch(error => {
@@ -192,8 +195,8 @@ function dependOnFilter(categoryId) {
 
 //fonction permettant l'affichage des images avec le filtre dependOnFilter = 0 (qui correspond à l'affichage de la totalité des données)
 
-async function showGallery() {
-    await fetch(apiUrlWorks)
+function showGallery() {
+    fetch(apiUrlWorks)
     .then(imagesData => {
         return imagesData.json()
     })
@@ -227,9 +230,9 @@ function showOnScreen(show) {
 
 //fonction permettant l'affichage des images dans le modal de modifications
 
-async function showGalleryForDelete() {
+function showGalleryForDelete() {
 
-    await fetch(apiUrlWorks)
+    fetch(apiUrlWorks)
     .then(imagesData => {
         return imagesData.json();
     })
@@ -238,15 +241,23 @@ async function showGalleryForDelete() {
         const imageForDelete = arr => {
             arr.forEach(({id, imageUrl, title}) => {
                 outputGalleryForDelete += `
-                    <div class="imageFromGallery">
-                        <button class="deleteIcon" onclick="deletePhotosFromGallery(${id})"><i class="fa fa-trash-can"></i></button>
-                        <img src="${imageUrl}" alt="${title}">
-                    </div>
+                <div class="imageFromGallery">
+                    <button class="deleteIcon" data-id="${id}"><i class="fa fa-trash-can"></i></button>
+                    <img src="${imageUrl}" alt="${title}">
+                </div>
             `;
             })
         }
         imageForDelete(imagesWithTrashcan);
         deletePhotosContainer.innerHTML = outputGalleryForDelete;
+        
+        const deleteIcons = document.querySelectorAll('.deleteIcon');
+        deleteIcons.forEach(deleteIcon => {
+            deleteIcon.addEventListener('click', function() {
+                const imageId = this.getAttribute('data-id');
+                deletePhotosFromGallery(imageId);
+        });
+    });
     })
     .catch(error => {
         console.log("Erreur", error);
@@ -269,8 +280,10 @@ async function deletePhotosFromGallery(id) {
 }
 
 
-//Ajout d'une photo dans la gallery et actualisation des foncions
+//Ajout d'une photo dans la gallery et actualisation des fonctions
 
+(function() {
+    const formAdd = document.getElementById("formAddId");
     formAdd.addEventListener('submit', function(e) {
         e.preventDefault();
         async function addPhotoInGallery() {
@@ -295,6 +308,13 @@ async function deletePhotosFromGallery(id) {
         }
 
             addPhotoInGallery();
+
+            const inputTitle = document.getElementById("inputTitle");
+            const inputImage = document.getElementById("inputImage");
+            const inputCategory = document.getElementById("inputCategory");
+            const dynamicSpanChange = document.getElementById("dynamicSpanChange");
+            const dynamicImagePreview = document.getElementById("dynamicImagePreview");
+
             inputTitle.value = '';
             inputCategory.value = '';
             inputImage.value = '';
@@ -311,8 +331,7 @@ async function deletePhotosFromGallery(id) {
             const htmlOverflow = document.getElementsByTagName("html")[0];
             htmlOverflow.style.overflow = "auto";
         });
-
-
+    })();
 showItemsFilters();
 showGallery();
 showGalleryForDelete();

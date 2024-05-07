@@ -32,6 +32,7 @@
                 <input type="text" name="email" id="email">
                 <label for="password">Mot de passe</label>
                 <input type="password" name="password" id="password">
+                <div id="error_login"></div>
                 <input type="submit" value="Se connecter" id="login_submit">
                 <a href="#">Mot de passe oublié</a>
             </form>
@@ -72,22 +73,28 @@
         })
         .then(response => {
 			if (!response.ok) {
-				throw new Error('Erreur lors de la récupération des données -> users/login')
-			}
-			return response.json();
+                const error_div = document.getElementById("error_login");
+                let show_error = error_div.querySelector(".error-message");
+                if (!show_error) {
+                    show_error = document.createElement("p");
+                    show_error.classList.add("error-message");
+                    show_error.innerText = "Identifiant ou mot-de-passe incorrect. Veuillez réessayer.";
+        
+                    error_div.appendChild(show_error);
+                }
+            }
+            return response.json();
 		})
         .then(data => {
-            if (data && data.token) {
+            if(data && data.token) {
                 sessionStorage.setItem('token', data.token); 
                 window.location.href = 'index.html';
-            } else {
-                alert('Identifiant ou mot-de-passe incorrect. Veuillez réessayer.');
             }
         })
         .catch(error => {
-			console.error('Erreur:', error);
-		  });
-        }
+            console.error("Erreur lors de la requête de connexion :", error);
+        })
+    }
     
 
 </script>
