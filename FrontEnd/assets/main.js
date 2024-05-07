@@ -184,9 +184,11 @@ function showItemsFilters() {
 
 //fonction permettant le filtrage des images en fonction de leur id de catégorie
 
+let allTheImages = [];
+
 function dependOnFilter(categoryId) {
 
-    let dependOnFilterDatas = window.allTheImages;
+    let dependOnFilterDatas = allTheImages.slice();
     if(categoryId > 0) {
        dependOnFilterDatas = dependOnFilterDatas.filter(show => show.categoryId === categoryId);
     }
@@ -201,7 +203,7 @@ function showGallery() {
         return imagesData.json()
     })
     .then(dataImages => {
-        window.allTheImages = dataImages;
+        allTheImages = dataImages;
         dependOnFilter(0);
     })
     .catch(error => {
