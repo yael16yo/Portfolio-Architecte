@@ -1,18 +1,18 @@
-//Déclaration de toutes les constantes
+(function() {
+
+//Déclaration des constantes
 
 const apiUrlFilters = "http://localhost:5678/api/categories";
 const apiUrlWorks = "http://localhost:5678/api/works";
 const tokenUser = sessionStorage.getItem('token');
 
-
 //Déconnexion
-(function() {
+
 const logout = document.getElementById("logout");
 logout.addEventListener('click', function() {
     sessionStorage.removeItem('token');
     window.location.reload();
 });
-})();
 
 //Login et logout buttons
 
@@ -81,7 +81,6 @@ if(tokenUser !== null) {
 
 //Stylisation des inputs
 
-(function() {
 const inputTitle = document.getElementById("inputTitle");
 const inputImage = document.getElementById("inputImage");
 const inputCategory = document.getElementById("inputCategory");
@@ -99,7 +98,6 @@ function validateFields() {
         validateButton.style.pointerEvents = ""; 
     }
 }
-})();    
 
     let previewPicture  = function (e) {
     const [picture] = e.files
@@ -184,8 +182,6 @@ function showItemsFilters() {
 
 //fonction permettant le filtrage des images en fonction de leur id de catégorie
 
-let allTheImages = [];
-
 function dependOnFilter(categoryId) {
 
     let dependOnFilterDatas = allTheImages.slice();
@@ -198,17 +194,19 @@ function dependOnFilter(categoryId) {
 //fonction permettant l'affichage des images avec le filtre dependOnFilter = 0 (qui correspond à l'affichage de la totalité des données)
 
 function showGallery() {
-    fetch(apiUrlWorks)
+    return fetch(apiUrlWorks)
     .then(imagesData => {
+        if(!imagesData.ok) {
+            throw new Error('Erreur');
+        }
         return imagesData.json()
     })
     .then(dataImages => {
         allTheImages = dataImages;
         dependOnFilter(0);
+        return allTheImages;
     })
-    .catch(error => {
-        console.log("Erreur", error);
-    })
+    .catch(error => error)
 }
 
 
@@ -284,7 +282,7 @@ async function deletePhotosFromGallery(id) {
 
 //Ajout d'une photo dans la gallery et actualisation des fonctions
 
-(function() {
+
     const formAdd = document.getElementById("formAddId");
     formAdd.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -333,8 +331,9 @@ async function deletePhotosFromGallery(id) {
             const htmlOverflow = document.getElementsByTagName("html")[0];
             htmlOverflow.style.overflow = "auto";
         });
-    })();
+
 showItemsFilters();
 showGallery();
 showGalleryForDelete();
 //addPhotoInGallery();
+})();
