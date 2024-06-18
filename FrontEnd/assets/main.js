@@ -99,18 +99,26 @@ function validateFields() {
     }
 }
 
-    let previewPicture  = function (e) {
-    const [picture] = e.files
-    if (picture) {
-        const image = document.getElementById("image");
-        const dynamicSpanChange = document.getElementById("dynamicSpanChange");
-        const dynamicImagePreview = document.getElementById("dynamicImagePreview");
-        image.src = URL.createObjectURL(picture);
-        dynamicSpanChange.style.display = "none";
-        dynamicImagePreview.style.display = "flex";
-    }
-    } 
-    
+
+
+        document.getElementById("inputImage").onchange = function() {
+            previewPicture(this);
+        };
+
+        let previewPicture = function (e) {
+            const [picture] = e.files;
+            if (picture) {
+                const image = document.getElementById("image");
+                const dynamicSpanChange = document.getElementById("dynamicSpanChange");
+                const dynamicImagePreview = document.getElementById("dynamicImagePreview");
+                image.src = URL.createObjectURL(picture);
+                dynamicSpanChange.style.display = "none";
+                dynamicImagePreview.style.display = "flex";
+            }
+        };
+
+
+
 
 //affichage des différentes buttons et sections dynamiques dans le modal 
 const dynamicDivDeletePhotos = document.getElementById("dynamicDivDeletePhotos");
@@ -336,4 +344,4 @@ showItemsFilters();
 showGallery();
 showGalleryForDelete();
 //addPhotoInGallery();
-})();
+})();   
